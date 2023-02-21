@@ -1,0 +1,557 @@
+
+
+
+ 
+
+
+
+
+
+  <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#navbarExample01" aria-controls="navbarExample01" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarExample01">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Features</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Pricing</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Navbar -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+data-mdb-toggle="pill"
+
+
+<div id="cbody">
+        <div class="container">
+            <div class="divider"></div>
+            <div class="heading">
+                <h2>Contacter-Nous</h2>
+            </div>
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1">
+                    <form id="contact-form" action="traitement.php" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="">Prenom<span class="bleu">*</span></label>
+                                <input type="text" name="firstnane" id="firstname" placeholder="Votre Prenom" value="<?= (isset($donnees["firstnane"]) && (!empty($donnees["firstnane"]))) ? $donnees["firstnane"] : "" ?>">
+                                <p class="comment"><?= (isset($erreurs["firstname"]) && !empty($erreurs["firstname"])) ? $erreurs["firstname"] : "" ?></p>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="name">Nom<span class="bleu">*</span></label>
+                                <input type="text" name="name" id="name" placeholder="Votre Nom" value="<?= (isset($donnees["name"]) && (!empty($donnees["name"]))) ? $donnees["name"] : "" ?>">
+                                <p class="comment"><?= (isset($erreurs["name"]) && !empty($erreurs["name"])) ? $erreurs["name"] : "" ?></p>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone">E-mail<span class="bleu">*</span></label>
+                                <input type="text" name="email" id="email" placeholder="Votre E-mail" value="<?= (isset($donnees["email"]) && (!empty($donnees["email"]))) ? $donnees["email"] : "" ?>">
+                                <p class="comment"><?= (isset($erreurs["email"]) && !empty($erreurs["email"])) ? $erreurs["email"] : "" ?></p>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email">Telephone</label>
+                                <input type="tel" name="phone" id="phone" placeholder="Votre Telephone" value="<?= (isset($donnees["phone"]) && (!empty($donnees["phone"]))) ? $donnees["phone"] : "" ?>">
+                                <p class="comment"><?= (isset($erreurs["phone"]) && !empty($erreurs["phone"])) ? $erreurs["phone"] : "" ?></p>
+                            </div>
+                            <div class="container-fluid">
+                                <label for="message">Message<span class="bleu">*</span></label>
+                                <textarea name="message" id="message" placeholder="Que veux tu me dire"
+                                    value="<?= (isset($donnees["message"]) && (!empty($donnees["message"]))) ? $donnees["message"] : "" ?>"></textarea>
+                                <p class="comment"><?= (isset($erreurs["message"]) && !empty($erreurs["message"])) ? $erreurs["message"] : "" ?></p>
+                            </div>
+                            <div class="col-md-12">
+
+                                <p class="bleus"><strong>* Ces informations sont requises</strong></p>
+                            </div>
+                            <div class="col-md-12">
+                                <input type="submit" value="Envoyer" class="btn-contact" name="submit">
+                                <p class="bleu"></p>
+                            </div>
+                        </div>
+                        <p class="thanks" style="display:<?= (isset($send) ) ? 'none': "" ?> ">Message recu...Un retour vous sera fait.... :)</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+       
+
+
+
+
+
+
+
+
+
+
+<?php
+// Testons si le fichier a bien été envoyé et s'il n'y a pas d'erreur
+if (isset($_FILES['screenshot']) && $_FILES['screenshot']['error'] == 0)
+{
+        // Testons si le fichier n'est pas trop gros
+        if ($_FILES['screenshot']['size'] <= 1000000)
+        {
+                // Testons si l'extension est autorisée
+                $fileInfo = pathinfo($_FILES['screenshot']['name']);
+                $extension = $fileInfo['extension'];
+                $allowedExtensions = ['jpg', 'jpeg', 'gif', 'png'];
+                if (in_array($extension, $allowedExtensions))
+                {
+                        // On peut valider le fichier et le stocker définitivement
+                        move_uploaded_file($_FILES['screenshot']['tmp_name'], 'uploads/' . basename($_FILES['screenshot']['name']));
+                        echo "L'envoi a bien été effectué !";
+                }
+        }
+}
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+
+// Validation du formulaire
+if (isset($_POST['email']) &&  isset($_POST['password'])) {
+    foreach ($users as $user) {
+        if (
+            $user['email'] === $_POST['email'] &&
+            $user['password'] === $_POST['password']
+        ) {
+            $loggedUser = [
+                'email' => $user['email'],
+            ];
+        } else {
+            $errorMessage = sprintf('Les informations envoyées ne permettent pas de vous identifier : (%s/%s)',
+                $_POST['email'],
+                $_POST['password']
+            );
+        }
+    }
+}
+?>
+
+<!--
+   Si utilisateur/trice est non identifié(e), on affiche le formulaire
+-->
+<?php if(!isset($loggedUser)): ?>
+<form action="home.php" method="post">
+    <!-- si message d'erreur on l'affiche -->
+    <?php if(isset($errorMessage)) : ?>
+        <div class="alert alert-danger" role="alert">
+            <?php echo $errorMessage; ?>
+        </div>
+    <?php endif; ?>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" aria-describedby="email-help" placeholder="you@exemple.com">
+        <div id="email-help" class="form-text">L'email utilisé lors de la création de compte.</div>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Mot de passe</label>
+        <input type="password" class="form-control" id="password" name="password">
+    </div>
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+</form>
+<!-- 
+    Si utilisateur/trice bien connectée on affiche un message de succès
+-->
+<?php else: ?>
+    <div class="alert alert-success" role="alert">
+        Bonjour <?php echo $loggedUser['email']; ?> et bienvenue sur le site !
+    </div>
+<?php endif; ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site de Recettes - Page d'accueil</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+        rel="stylesheet"
+    >
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <div class="container">
+
+    <!-- Navigation -->
+    <?php include_once('header.php'); ?>
+
+    <!-- Inclusion du formulaire de connexion -->
+    <?php include_once('login.php'); ?>
+        <h1>Site de Recettes !</h1>
+
+        <!-- Si l'utilisateur existe, on affiche les recettes -->
+        <?php if(isset($loggedUser)): ?>
+            <?php foreach(get_recipes($recipes, $limit) as $recipe) : ?>
+                <article>
+                    <h3><?php echo $recipe['title']; ?></h3>
+                    <div><?php echo $recipe['recipe']; ?></div>
+                    <i><?php echo display_author($recipe['author'], $users); ?></i>
+                </article>
+            <?php endforeach ?>
+        <?php endif; ?>
+    </div>
+
+    <?php include_once('footer.php'); ?>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+$isSucces = false;
+$emailto = 'azanmassouhappylouis@gmail.com';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+... ou créer un nouveau référentiel sur la ligne de commande
+echo "# youpi" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+
+
+
+
+git branch -M main
+git remote add origin git@github.com:azanmassou/youpi.git
+git push -u origin main
+
+
+
+... ou pousser un référentiel existant à partir de la ligne de commande
+git remote add origin git@github.com:azanmassou/youpi.git
+git branch -M main
+git push -u origin main
+
+
+json-decode && json-encode 
+
+
+
+/*
+// Traitement.php connexion name = 'valider' avec base de donnees
+if (isset($_POST['valider'])) {
+if (empty($_POST['user']) || empty($_POST['password'])) {
+echo ('il faut an moins un username, et un mot de passe pour soumettre le formulaire');
+return;
+}
+if (!empty($_POST)) {
+$psuedo = htmlspecialchars($_POST['user']);
+$mdp = htmlspecialchars($_POST['password']);
+$erreur = "";
+$non_serveur = "localhost";
+$utilisateur = "root";
+$mot_de_passe = "";
+$nom_base_donnees = "form";
+$con = mysqi_connect($non_serveur ,$utilisateur ,$mot_de_passe ,$nom_base_donnees);$req =
+$req = mysqli_query($con , "SELECT * FROM utilisateurs WHERE mdp = '$email' AND user = '$user' ");
+$num_ligne = mysqi_num_rows($req);
+if($num_ligne > 0){
+header("Location:home.php");
+$_SESSION['user'] = $psuedo;
+} else {
+$erreur = "Username ou Mots de Passe incorectes !!! ";
+}
+}
+}
+*/
+
+
+
+
+
+
+ <?php echo " <p classe='message'>Bonjour" . $_SESSION('user') ?> 
+    </p>
+
+/*<!-- Inclusion du formulaire de connexion -->
+<?php include_once('login.php'); ?>
+<h1>Site de Recettes !</h1>
+
+<!-- Si l'utilisateur existe, on affiche les recettes -->
+<?php if (isset($loggedUser)): ?>
+    <?php foreach (get_recipes($recipes, $limit) as $recipe): ?>
+        <article>
+            <h3>
+                <?php echo $recipe['title']; ?>
+            </h3>
+            <div>
+                <?php echo $recipe['recipe']; ?>
+            </div>
+            <i>
+                <?php echo display_author($recipe['author'], $users); ?>
+            </i>
+        </article>
+    <?php endforeach ?>
+<?php endif; ?>
+
+*/
+
+
+
+
+
+
+<div id="langues">
+            <h2>Langues</h2>
+            <select v-model="selected">
+                <option disabled value="">Please select one</option>
+                <option><a href="">Francais</a></option>
+                <option><a href="">Anglais</a></option>
+                <option><a href="">Espagnol</a></option>
+                <option><a href="">Portugais</a></option>
+                <option><a href="">Italien</a></option>
+            </select>
+        </div>
+
+
+
+
+
+<div class="dt">
+    <h1>Date <?php echo date('d-m-Y'); ?></h1>
+    <h1>Heure <?php echo date('h:i:s'); ?></h1>
+</div>
+
+<?php
+// Traitement.php
+if (!isset($_POST['username']) || !isset($_POST['password'])){
+    echo('il faut un username, et un mot de passe pour soumettre le formulaire');
+    return;
+}
+$username = $_POST['username'];
+$password =  $_POST['password'];
+
+?>
+
+<form action="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>" method="post">
+
+<?php
+
+  if(isset($_POST['valider']))
+  {
+  	if(isset($_POST['user_name']) AND isset($_POST['user_email']) AND isset($_POST['user_message']))
+  	{
+  		if(!empty($_POST['user_name']) AND !empty($_POST['user_email']) AND !empty($_POST['user_message']))
+  		{
+           $name=htmlspecialchars($_POST['user_name']);
+           $email=htmlspecialchars($_POST['user_email']);
+           $message=htmlspecialchars($_POST['user_message']);
+ 
+             
+             écho « <h2> Bonjour  <mark><b> $name </b></mark>  merci pour votre email:<mark><b> $email </b></mark>, nous avons lu votre message:  </br></br> $message </h2>";
+  		}
+  	}
+  }
+?>
+
+
+form {
+    /* Center the form on the page */
+    margin: 0 auto;
+    width: 400px;
+    /* Form outline */
+    padding: 1em;
+    border: 1px solid #CCC;
+    border-radius: 1em;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  form li + li {
+    margin-top: 1em;
+  }
+  
+  label {
+    /* Uniform size & alignment */
+    display: inline-block;
+    width: 90px;
+    text-align: right;
+  }
+  
+  input,textarea {
+    /* To make sure that all text fields have the same font settings
+       By default, textareas have a monospace font */
+    font: 1em sans-serif;
+  
+    /* Uniform text field size */
+    width: 300px;
+    box-sizing: border-box;
+  
+    /* Match form field borders */
+    border: 1px solid #999;
+  }
+  
+  input:focus, 
+  textarea:focus {
+    /* Additional highlight for focused elements */
+    border-color: #000;
+  }
+  
+  textarea {
+    /* Align multiline text fields with their labels */
+    vertical-align: top;
+  
+    /* Provide space to type some text */
+    height: 5em;
+  }
+  
+  .button {
+    /* Align buttons with the text fields */
+    padding-left: 90px; /* same size as the label elements */
+  }
+  
+  button {
+    /* This extra margin represent roughly the same space as the space
+       between the labels and their text fields */
+    margin-left: .5em;
+  }
+
+  print_r
+  var_dump
+  die
+
+  enctype="multipart/form-data"
+
+
+
+
+
+
+  // Testons si le fichier a bien été envoyé et s'il n'y a pas d'erreur
+if (isset($_FILES['screenshot']) && $_FILES['screenshot']['error'] == 0)
+{
+        // Testons si le fichier n'est pas trop gros
+        if ($_FILES['screenshot']['size'] <= 1000000)
+        {
+                // Testons si l'extension est autorisée
+                $fileInfo = pathinfo($_FILES['screenshot']['name']);
+                $extension = $fileInfo['extension'];
+                $allowedExtensions = ['jpg', 'jpeg', 'gif', 'png'];
+                if (in_array($extension, $allowedExtensions))
+                {
+                        // On peut valider le fichier et le stocker définitivement
+                        move_uploaded_file($_FILES['screenshot']['tmp_name'], 'uploads/' . basename($_FILES['screenshot']['name']));
+                        echo "L'envoi a bien été effectué !";
+                }
+        }
+}
+
+
+
+<h2>Langues</h2>
+            <select v-model="selected">
+                <option disabled value="">Please select one</option>
+                <option><a href="">Francais</a></option>
+                <option><a href="">Anglais</a></option>
+                <option><a href="">Espagnol</a></option>
+                <option><a href="">Portugais</a></option>
+                <option><a href="">Italien</a></option>
+            </select>
+
+
+            // for foreach print_r
+
+//array_key_exists( Existence ave cle ) in array( Existence avec valeure) array_search (Existence + Prise de cle) */
